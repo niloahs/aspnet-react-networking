@@ -1,5 +1,5 @@
-import axios, {AxiosResponse} from 'axios';
-import {Activity} from "../models/activity.ts";
+import axios, { AxiosResponse } from 'axios';
+import { Activity } from "../models/activity.ts";
 
 
 const sleep = (delay: number) => {

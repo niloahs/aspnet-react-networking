@@ -1,7 +1,7 @@
-import {Container} from "semantic-ui-react";
+import { Container } from "semantic-ui-react";
 import NavBar from "./NavBar.tsx";
-import {observer} from "mobx-react-lite";
-import {Outlet, useLocation} from "react-router-dom";
+import { observer } from "mobx-react-lite";
+import { Outlet, useLocation } from "react-router-dom";
 import HomePage from "../../features/home/HomePage.tsx";
 
 function App() {
@@ -9,11 +9,11 @@ function App() {
 
     return (
         <>
-            {location.pathname === '/' ? <HomePage/> : (
+            {location.pathname === '/' ? <HomePage /> : (
                 <>
-                    <NavBar/>
+                    <NavBar />
                     <Container style={{marginTop: '7em'}}>
-                        <Outlet/>
+                        <Outlet />
                     </Container>
                 </>
             )}
