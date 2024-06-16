@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+[AllowAnonymous]
 public class ActivitiesController(IMediator mediator) : BaseApiController
 {
     [HttpGet] //api/activities

@@ -6,16 +6,13 @@ public class RegisterDto
 {
     [Required] public string DisplayName { get; set; }
 
-    [Required] 
-    [EmailAddress] 
-    public string Email { get; set; }
+    [Required] [EmailAddress] public string Email { get; set; }
 
     [Required]
-    [RegularExpression("(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{4,8}$",
+    [RegularExpression("(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{4,16}$",
         ErrorMessage =
-            "Password must have 1 uppercase, 1 lowercase, 1 number, 1 non alphanumeric and at least 4 characters")]
+            "Your password must contain at least one uppercase letter, one lowercase letter, one number, and one special character. It must also be between 4 and 16 characters in length.")]
     public string Password { get; set; }
 
-    [Required]
-    public string Username { get; set; }
+    [Required] public string Username { get; set; }
 }
