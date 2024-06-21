@@ -7,6 +7,7 @@ import { ToastContainer } from "react-toastify";
 import { useStore } from "../stores/store.ts";
 import { useEffect } from "react";
 import ModalContainer from "../common/modals/ModalContainer.tsx";
+import LoadingComponent from "./LoadingComponents.tsx";
 
 function App() {
     const location = useLocation();
@@ -20,12 +21,9 @@ function App() {
         }
     }, [commonStore, userStore]);
 
-    if (!commonStore.appLoaded) return (
-        <Container style={{marginTop: '7em'}}>
-            Loading app...
-        </Container>
-    );
-
+    if (!commonStore.appLoaded) {
+        return <LoadingComponent content='Loading app...' />;
+    }
 
     return (
         <>
