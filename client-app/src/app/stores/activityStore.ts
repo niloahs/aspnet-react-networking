@@ -163,7 +163,7 @@ export default class ActivityStore {
             })
         }
     }
-    
+
     cancelActivityToggle = async () => {
         this.loading = true;
         try {
@@ -172,7 +172,7 @@ export default class ActivityStore {
                 this.selectedActivity!.isCancelled = !this.selectedActivity?.isCancelled;
                 this.activityRegistry.set(this.selectedActivity!.id, this.selectedActivity!);
             })
-            
+
         } catch (error) {
             console.log(error);
         } finally {
@@ -180,4 +180,9 @@ export default class ActivityStore {
                 this.loading = false;
             })
         }
-}}
+    }
+    
+    clearSelectedActivity = () => {
+        this.selectedActivity = undefined;
+    }
+}
