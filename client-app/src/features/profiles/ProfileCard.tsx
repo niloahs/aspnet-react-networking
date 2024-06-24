@@ -1,10 +1,12 @@
 import { Profile } from "../../app/models/profile.ts";
 import { Card, Icon, Image } from "semantic-ui-react";
 import { Link } from "react-router-dom";
+import FollowButton from "./FollowButton.tsx";
 
 interface Props {
     profile: Profile;
 }
+
 export default function ProfileCard({profile}: Props) {
     return (
         <Card as={Link} to={`/profiles/${profile.username}`}>
@@ -15,8 +17,9 @@ export default function ProfileCard({profile}: Props) {
             </Card.Content>
             <Card.Content extra>
                 <Icon name={'user'} />
-                ?? Followers
+                {profile.followersCount} Followers
             </Card.Content>
+            <FollowButton profile={profile} />
         </Card>
     )
 }

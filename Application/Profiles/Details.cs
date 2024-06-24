@@ -19,18 +19,20 @@ public class Details
     {
         private readonly DataContext _dataContext;
         private readonly IMapper _mapper;
+        private readonly IUserAccessor _userAccessor;
 
-        public Handler(DataContext dataContext, IMapper mapper)
+        public Handler(DataContext dataContext, IMapper mapper, IUserAccessor userAccessor)
         {
             _dataContext = dataContext;
             _mapper = mapper;
+            _userAccessor = userAccessor;
         }
 
         public async Task<Result<Profile>> Handle(Query request,
             CancellationToken cancellationToken)
         {
             var user = await _dataContext.Users
-                .ProjectTo<Profile>(_mapper.ConfigurationProvider)
+                .ProjectTo<Profile>(_mapper.ConfigurationProvider, new {currentUsername = _userAccessor.GetUsername()})
                 .SingleOrDefaultAsync(x => x.Username == request.Username,
                     cancellationToken: cancellationToken);
 
