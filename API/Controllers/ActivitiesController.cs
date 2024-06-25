@@ -1,4 +1,5 @@
 using Application.Activities;
+using Application.Core;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -9,9 +10,9 @@ namespace API.Controllers;
 public class ActivitiesController(IMediator mediator) : BaseApiController
 {
     [HttpGet] //api/activities
-    public async Task<IActionResult> GetActivities()
+    public async Task<IActionResult> GetActivities([FromQuery] ActivityParams activityParams)
     {
-        return HandleResult(await Mediator.Send(new List.Query()));
+        return HandlePagedResult(await Mediator.Send(new List.Query { Params = activityParams }));
     }
 
     [HttpGet("{id:guid}")] //api/activities/id
