@@ -30,18 +30,16 @@ public class BaseApiController : ControllerBase
     {
         if (result == null) return NotFound();
 
-        if (result.IsSuccess && result.Value != null)
+        switch (result.IsSuccess)
         {
-            Response.AddPaginationHeader(result.Value.CurrentPage, result.Value.PageSize,
-                result.Value.TotalCount, result.Value.TotalPages);
-            return Ok(result.Value);
+            case true when result.Value != null:
+                Response.AddPaginationHeader(result.Value.CurrentPage, result.Value.PageSize,
+                    result.Value.TotalCount, result.Value.TotalPages);
+                return Ok(result.Value);
+            case true when result.Value == null:
+                return NotFound();
+            default:
+                return BadRequest(result.Error);
         }
-
-        if (result.IsSuccess && result.Value == null)
-        {
-            return NotFound();
-        }
-
-        return BadRequest(result.Error);
     }
 }

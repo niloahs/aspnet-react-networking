@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { router } from "../router/Routes.tsx";
 import { store } from "../stores/store.ts";
 import { User, UserFormValues } from "../models/user.ts";
-import { Photo, Profile } from "../models/profile.ts";
+import { Photo, Profile, UserActivity } from "../models/profile.ts";
 import { PaginatedResult } from "../models/pagination.ts";
 
 
@@ -79,7 +79,8 @@ const Activities = {
     create: (activity: ActivityFormValues) => requests.post<void>('/activities', activity),
     update: (activity: ActivityFormValues) => requests.put<void>(`/activities/${activity.id}`, activity),
     delete: (id: string) => requests.del<void>(`/activities/${id}`),
-    attend: (id: string) => requests.post<void>(`/activities/${id}/attend`, {})
+    attend: (id: string) => requests.post<void>(`/activities/${id}/attend`, {}),
+    userList: (username: string, predicate: string) => requests.get<UserActivity[]>(`/profiles/${username}/activities?predicate=${predicate}`),
 }
 
 const Account = {
@@ -101,6 +102,7 @@ const Profiles = {
     deletePhoto: (id: string) => requests.del(`/photos/${id}`),
     updateFollowing: (username: string) => requests.post(`/follow/${username}`, {}),
     listFollowings: (username: string, predicate: string) => requests.get<Profile[]>(`/follow/${username}?predicate=${predicate}`),
+    updateProfile: (username: string, profile: Partial<Profile>) => requests.put<void>(`/profiles/${username}`, profile)
 }
 
 const agent = {

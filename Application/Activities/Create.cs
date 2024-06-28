@@ -38,7 +38,8 @@ public class Create
         {
             var user =
                 await _context.Users.FirstOrDefaultAsync(x =>
-                    x.UserName == _userAccessor.GetUsername());
+                        x.UserName == _userAccessor.GetUsername(),
+                    cancellationToken: cancellationToken);
 
             var attendee = new ActivityAttendee
             {
@@ -46,16 +47,16 @@ public class Create
                 Activity = request.Activity,
                 IsHost = true
             };
-            
+
             request.Activity.Attendees.Add(attendee);
 
             _context.Activities.Add(request.Activity);
 
-            var result = await _context.SaveChangesAsync() > 0;
+            var result = await _context.SaveChangesAsync(cancellationToken) > 0;
 
-            if (!result) return Result<Unit>.Failure("Failed to create an activity.");
-
-            return Result<Unit>.Success(Unit.Value);
+            return !result
+                ? Result<Unit>.Failure("Failed to create an activity.")
+                : Result<Unit>.Success(Unit.Value);
         }
     }
 }

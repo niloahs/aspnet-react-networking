@@ -1,7 +1,9 @@
 import { makeAutoObservable, reaction, runInAction } from "mobx";
-import { Photo, Profile } from "../models/profile.ts";
+import { Photo, Profile, UserActivity } from "../models/profile.ts";
 import agent from "../api/agent.ts";
 import { store } from "./store.ts";
+import axios, { CancelTokenSource } from "axios";
+import { toast } from "react-toastify";
 
 export default class ProfileStore {
     profile: Profile | null = null;
@@ -11,6 +13,9 @@ export default class ProfileStore {
     followings: Profile[] = [];
     loadingFollowings = false;
     activeTab = 0;
+    userActivities: UserActivity[] = [];
+    loadingActivities = false;
+    axiosCancelSource: CancelTokenSource | undefined;
 
     constructor() {
         makeAutoObservable(this);
@@ -27,11 +32,11 @@ export default class ProfileStore {
             }
         )
     }
-    
+
     setActiveTab = (activeTab: number) => {
         this.activeTab = activeTab;
     }
-    
+
     get isCurrentUser() {
         if (store.userStore.user && this.profile) {
             return store.userStore.user.username === this.profile.username;
@@ -50,6 +55,24 @@ export default class ProfileStore {
         } catch (error) {
             console.log(error);
             runInAction(() => this.loadingProfile = false);
+        }
+    }
+
+    updateProfile = async (username: string, profile: Partial<Profile>) => {
+        this.loading = true;
+        try {
+            await agent.Profiles.updateProfile(username, profile);
+            runInAction(() => {
+                if (profile.displayName && profile.displayName !== store.userStore.user?.displayName) {
+                    store.userStore.setDisplayName(profile.displayName);
+                }
+                this.profile = {...this.profile!, ...profile as Profile};
+                this.loading = false;
+            });
+            toast.success('Profile updated successfully', { autoClose: 2000 });
+        } catch (error) {
+            console.log(error);
+            runInAction(() => this.loading = false);
         }
     }
 
@@ -119,11 +142,11 @@ export default class ProfileStore {
                     following ? this.profile.followersCount++ : this.profile.followersCount--;
                     this.profile.following = !this.profile.following;
                 }
-                
+
                 if (this.profile && this.profile.username === store.userStore.user?.username) {
                     following ? this.profile.followingCount++ : this.profile.followingCount--;
                 }
-                
+
                 this.followings.forEach(profile => {
                     if (profile.username === username) {
                         profile.following ? profile.followersCount-- : profile.followersCount++;
@@ -139,7 +162,7 @@ export default class ProfileStore {
             });
         }
     }
-    
+
     loadFollowings = async (predicate: string) => {
         this.loadingFollowings = true;
         try {
@@ -153,4 +176,35 @@ export default class ProfileStore {
             runInAction(() => this.loadingFollowings = false);
         }
     }
+
+    loadUserActivities = async (username: string, predicate: string) => {
+        this.userActivities = [];
+        this.loadingActivities = true;
+
+        if (this.axiosCancelSource) {
+            this.axiosCancelSource.cancel();
+        }
+
+        this.axiosCancelSource = axios.CancelToken.source();
+
+        const currentCancelToken = this.axiosCancelSource.token;
+
+        try {
+            const activities = await agent.Activities.userList(username, predicate);
+            runInAction(() => {
+                if (this.axiosCancelSource && this.axiosCancelSource.token === currentCancelToken) {
+                    this.userActivities = activities;
+                    this.loadingActivities = false;
+                }
+            });
+        } catch (error) {
+            if (axios.isCancel(error)) {
+                console.log('Request canceled', error.message);
+            } else {
+                console.log(error);
+                runInAction(() => this.loadingActivities = false);
+            }
+        }
+    }
 }
+
