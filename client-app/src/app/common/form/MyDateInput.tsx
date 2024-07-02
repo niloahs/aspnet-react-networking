@@ -1,6 +1,8 @@
 import { useField } from "formik";
-import DatePicker, { ReactDatePickerProps } from "react-datepicker";
 import { Form, Label } from "semantic-ui-react";
+// @ts-ignore
+import { ReactDatePickerProps } from "react-datepicker";
+import DatePicker from "react-datepicker";
 
 export default function MyDateInput(props: Partial<ReactDatePickerProps>) {
     const [field, meta, helpers] = useField(props.name!);

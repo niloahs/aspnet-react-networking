@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-public class ActivitiesController(IMediator mediator) : BaseApiController
+public class ActivitiesController : BaseApiController
 {
     [HttpGet] //api/activities
     public async Task<IActionResult> GetActivities([FromQuery] ActivityParams activityParams)

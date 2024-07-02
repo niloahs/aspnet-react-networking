@@ -1,4 +1,4 @@
-import { Tab, TabPane } from "semantic-ui-react";
+import { Tab } from "semantic-ui-react";
 import ProfilePhotos from "./ProfilePhotos.tsx";
 import { observer } from "mobx-react-lite";
 import { Profile } from "../../app/models/profile.ts";
@@ -6,7 +6,6 @@ import ProfileFollowings from "./ProfileFollowings.tsx";
 import { useStore } from "../../app/stores/store.ts";
 import ProfileActivities from "./ProfileActivities.tsx";
 import ProfileEdit from "./ProfileEditForm.tsx";
-import { render } from "react-dom";
 
 interface Props {
     profile: Profile;
