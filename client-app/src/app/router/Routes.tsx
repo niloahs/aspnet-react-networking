@@ -3,7 +3,6 @@ import App from "../layout/App.tsx";
 import ActivityDashboard from "../../features/activities/dashboard/ActivityDashboard.tsx";
 import ActivityForm from "../../features/activities/form/ActivityForm.tsx";
 import ActivityDetails from "../../features/activities/details/ActivityDetails.tsx";
-import TestErrors from "../../features/errors/TestError.tsx";
 import NotFound from "../../features/errors/NotFound.tsx";
 import ServerError from "../../features/errors/ServerError.tsx";
 import ProfilePage from "../../features/profiles/ProfilePage.tsx";
@@ -21,7 +20,6 @@ export const routes: RouteObject[] = [
                     {path: 'createActivity', element: <ActivityForm key={'create'} />},
                     {path: 'manage/:id', element: <ActivityForm key={'manage'} />},
                     {path: 'profiles/:username', element: <ProfilePage />},
-                    {path: 'errors', element: <TestErrors />},
                     {path: 'not-found', element: <NotFound />},
                 ]
             },

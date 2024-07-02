@@ -18,11 +18,9 @@ public class AccountController : ControllerBase
 
     public AccountController(UserManager<AppUser> userManager, TokenService tokenService)
     {
-        _userManager = userManager;
         _tokenService = tokenService;
+        _userManager = userManager;
     }
-
-    public UserManager<AppUser> UserManager => _userManager;
 
     [AllowAnonymous]
     [HttpPost("login")]
@@ -52,13 +50,13 @@ public class AccountController : ControllerBase
     {
         if (await _userManager.Users.AnyAsync(x => x.UserName == registerDto.Username))
         {
-            ModelState.AddModelError("username", "Username already exists.");
+            ModelState.AddModelError("username", "Username already exists");
             return ValidationProblem();
         }
 
         if (await _userManager.Users.AnyAsync(x => x.Email == registerDto.Email))
         {
-            ModelState.AddModelError("email", "Email already exists.");
+            ModelState.AddModelError("email", "Email already exists");
             return ValidationProblem();
         }
 
@@ -73,7 +71,7 @@ public class AccountController : ControllerBase
 
         if (result.Succeeded)
         {
-            CreateUserObject(user);
+            return CreateUserObject(user);
         }
 
         return BadRequest(result.Errors);
@@ -83,9 +81,8 @@ public class AccountController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<UserDto>> GetCurrentUser()
     {
-        var user =
-            await _userManager.Users.Include(p => p.Photos)
-                .FirstOrDefaultAsync(x => x.Email == User.FindFirstValue(ClaimTypes.Email));
+        var user = await _userManager.Users.Include(p => p.Photos)
+            .FirstOrDefaultAsync(x => x.Email == User.FindFirstValue(ClaimTypes.Email));
 
         return CreateUserObject(user);
     }
@@ -95,7 +92,7 @@ public class AccountController : ControllerBase
         return new UserDto
         {
             DisplayName = user.DisplayName,
-            Image = user.Photos?.FirstOrDefault(p => p.IsMain)?.Url,
+            Image = user?.Photos?.FirstOrDefault(x => x.IsMain)?.Url,
             Token = _tokenService.CreateToken(user),
             Username = user.UserName
         };

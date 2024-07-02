@@ -2,7 +2,6 @@ using System.Text;
 using API.Services;
 using Domain;
 using Infrastructure.Security;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
@@ -22,8 +21,15 @@ public static class IdentityServiceExtensions
             })
             .AddEntityFrameworkStores<DataContext>();
 
-        var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(config["TokenKey"]!));
+        var tokenKey = config["TokenKey"];
+        if (tokenKey == null)
+        {
+            throw new ArgumentNullException(nameof(tokenKey),
+                "TokenKey is not configured properly in appsettings.");
+        }
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey));
+
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(opt =>
@@ -51,7 +57,7 @@ public static class IdentityServiceExtensions
                     }
                 };
             });
-        
+
         services.AddAuthorization(opt =>
         {
             opt.AddPolicy("IsActivityHost",
